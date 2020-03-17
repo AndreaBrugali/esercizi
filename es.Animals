@@ -1,0 +1,62 @@
+package LEZIONE_03;
+
+import java.util.Scanner;
+
+public class animali {
+	public static void main(String[] args) {
+
+
+
+		Scanner in =new Scanner(System.in);
+		System.out.println("scrivi l'animale  ");
+		String str=in.nextLine();
+		str=str.toLowerCase();
+		System.out.println(animals(str));
+		in.close();
+
+
+
+	}
+	public static String animals(String tipo)
+	{
+		String verso="";
+		String desc="";
+		boolean ok=false;
+		if(tipo.equals("gatto"))
+		{
+			desc="Il gatto domestico è un mammifero carnivoro appartenente alla famiglia dei felidi. Si contano una cinquantina di razze differenti riconosciute con certificazioni.";
+			verso="il gatto fa miao miao";
+		}
+		else if(tipo.equals("cane"))
+		{
+			desc="Il cane è un mammifero appartenente all'ordine Carnivora, della famiglia dei canidi. Con l'avvento dell'addomesticamento si è distinto dal lupo, di cui è considerato una sottospecie.";
+			verso="il cane fa bau bau";
+		}
+		else if(tipo.equals("pecora"))
+		{
+			desc="La pecora è un mammifero della famiglia dei Bovidae. Si tratta di un animale addomesticato in epoca antichissima, diffuso attualmente in ogni continente.";
+			verso="la pecora fa bee bee";
+			ok=true;
+		}
+		else if(tipo.equals("mucca"))
+		{
+			desc="La femmina del toro domestico, la vacca o mucca, viene allevata per trarne il latte, liquido secreto dalla ghiandola mammaria per l'alimentazione del vitello, molto usato nell'alimentazione umana";
+			verso="la mucca fa muu muu";
+			ok=true;
+		}
+		else
+		{
+			return "questo animale non è presente nel nostro DB";
+		}
+		System.out.println(desc);
+		if(ok)
+		{
+			System.out.println(verso);
+			return "";
+		}
+		else {
+			return verso;
+		}
+		
+	}
+}
