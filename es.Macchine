@@ -1,0 +1,165 @@
+package LEZIONE_03;
+
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
+import java.util.Scanner;
+
+public class cars {
+
+	public String nome;
+	public int capacità;
+	public int consumo;
+	public int caini;
+	public boolean acceso;
+	public int posizione;
+	public Date dataI;
+	public Date dataF;
+	public cars(String n,int c,int co,int ca,boolean a,int p,Date i,Date f) {
+		this.nome=n;
+		this.capacità=c;
+		this.consumo=co;
+		this.caini=ca;
+		this.acceso=a;
+		this.posizione=p;
+		this.dataI=i;
+		this.dataF=f;
+	}
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner in =new Scanner(System.in);
+		System.out.println("quante macchine partecipano alla gara?  ");
+		int num=in.nextInt();
+		
+		ArrayList<cars> carsList = new ArrayList();
+		
+		for(int n=1;n<num+1;n++)
+		{
+			Scanner no =new Scanner(System.in);
+			System.out.println("nome della macchina "+n+": ");
+			String nome=no.nextLine();
+			
+			int cap=capacitaSerb();
+			cars car=new cars(nome,cap,consumoKmLitro(),capacitaIniziale(cap),false,0,new Date(),null);
+			carsList.add(car);
+		}
+		
+		viaggio(carsList,num);
+		
+	}
+	public static int consumoKmLitro()
+	{
+		Random random = new Random();
+		return random.nextInt(25-15)+15;
+	}
+	public static int capacitaSerb()
+	{
+		Random random = new Random();
+		return random.nextInt(60-35)+35;
+	}
+	public static int capacitaIniziale(int cap)
+	{
+		int c=1;
+		int r=0;
+		for(int a=0;a<1;c++)
+		{
+			Random random = new Random();
+		    r= random.nextInt(50-10)+10;
+			if(r>cap)
+			{
+				a=0;
+			}else
+			{
+				a=1;
+			}
+		}
+		return r;
+		
+	}
+	public static boolean accensione()
+	{
+		return true;
+	}
+	public static boolean spegnimento()
+	{
+		return false;
+	}
+	public static void viaggio(ArrayList<cars> list,int num)
+	{
+		int posizione=num;
+		int count=num;
+		ArrayList<String> podio=new ArrayList();
+		
+		ArrayList<Integer> cons = new ArrayList<Integer>();
+		
+		
+		
+		for(int a=0;a<num;a++)
+		{
+			list.get(a).acceso=accensione();
+			cons.add(list.get(a).consumo);
+			System.out.println(list.get(a).nome+" capacità massima: "+list.get(a).capacità+" - capacità iniziale: "+list.get(a).caini+" - consumo al litro: "+list.get(a).consumo);
+			
+		}
+		
+		for(int i=1;posizione!=0;i++)
+		{
+			for(int x=0;x<count;x++)
+			{
+				list.get(x).consumo=list.get(x).consumo -1;
+				if(list.get(x).consumo==0)
+				{
+					list.get(x).caini=list.get(x).caini - 1;
+					list.get(x).consumo=cons.get(x);
+					if(list.get(x).caini==0)
+					{
+						Date date = new Date();
+						Calendar data = Calendar.getInstance();
+						
+						data.setTime(date);
+						if(i<200)
+						{
+							data.add(Calendar.MINUTE, +5);
+							list.get(x).dataF=data.getTime();
+						}
+						else if(i<500)
+						{
+							data.add(Calendar.MINUTE, +10);
+							list.get(x).dataF=data.getTime();
+						}
+						else if(i<800)
+						{
+							data.add(Calendar.MINUTE, +15);
+							list.get(x).dataF=data.getTime();
+						}
+						else
+						{
+							data.add(Calendar.MINUTE, +20);
+							list.get(x).dataF=data.getTime();
+						}
+						
+						list.get(x).posizione=posizione;
+						podio.add(posizione+"°: "+list.get(x).nome +" data partenza: "+list.get(x).dataI+" dataArrivo "+list.get(x).dataF+" km effettuati: "+i);
+						list.get(x).acceso=spegnimento();
+						
+						list.remove(x);
+						cons.remove(x);
+						count=count-1;
+						posizione=posizione-1;
+						
+					}
+				}
+			}
+		}
+		
+		for(int p=0;p<num;p++)
+		{
+			System.out.println(podio.get(p));
+		}
+		
+	}
+}
