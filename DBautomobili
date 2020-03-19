@@ -1,0 +1,177 @@
+package LEZIONE_05;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Scanner;
+
+public class automobili {
+
+	static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+	static final String DB_URL = "jdbc:mysql://localhost/garage";
+	// Database credentials
+	static final String USER = "root";
+	static final String PASS = "";
+	public static void main(String[] args) {
+		Connection conn = null;
+		//Statement stmt = null;
+		PreparedStatement stmt=null;
+		try{
+			//STEP 2: Register JDBC driver
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			//STEP 3: Open a connection
+			System.out.println("Connecting to database...");
+			conn = DriverManager.getConnection(DB_URL,USER,PASS);
+			//STEP 4: Execute a query
+			System.out.println("Creating statement...");
+			//stmt = conn.createStatement();
+			String sql;
+			//chiedo all'utente
+			Scanner in =new Scanner(System.in);
+			int scelta=0;
+			while(scelta!=5)
+			{
+				System.out.println("\n1)visualizza \n2)cerca \n3)inserisci \n4)esporta \n5)esci  ");
+				scelta=in.nextInt();
+				if(scelta==1)
+				{
+					sql = "SELECT id, marca, modello, numero_posti FROM automobili";
+					stmt = conn.prepareStatement(sql);
+					ResultSet rs = stmt.executeQuery();
+					//STEP 5: Extract data from result set
+					
+					while(rs.next()){
+						//Retrieve by column name
+						int id=rs.getInt("id");
+						String marca = rs.getString("marca");
+						String modello = rs.getString("modello");
+						int nposti = rs.getInt("numero_posti");
+
+						//Display values
+						System.out.print(id +"\t|");
+						System.out.print(marca +"\t|");
+						System.out.print(modello +"\t|");
+						System.out.print(nposti+"\n");
+
+					}
+					//STEP 6: Clean-up environment
+					rs.close();
+				}
+				if(scelta==2)
+				{
+					Scanner inS =new Scanner(System.in);
+					System.out.println("scegli marca ");
+					String marcaS=inS.nextLine();
+					sql = "SELECT marca, modello, numero_posti FROM automobili WHERE marca=?";
+					stmt = conn.prepareStatement(sql);
+					stmt.setString(1,marcaS);
+					//stmt2.execute();
+					ResultSet rs = stmt.executeQuery();
+					//STEP 5: Extract data from result set
+					while(rs.next()){
+						//Retrieve by column name
+						String marca = rs.getString("marca");
+						String modello = rs.getString("modello");
+						int nposti = rs.getInt("numero_posti");
+
+						//Display values
+						System.out.print(marca +"\t| ");
+						System.out.print(modello+"\t| ");
+						System.out.print(nposti+"\n");
+
+					}
+					//STEP 6: Clean-up environment
+					rs.close();
+				}
+				if(scelta==3)
+				{
+					DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+					Scanner inS =new Scanner(System.in);
+					Scanner a =new Scanner(System.in);
+					System.out.println("scegli marca ");
+					String marcaS=a.nextLine();
+					Scanner b =new Scanner(System.in);
+					System.out.println("scegli modello ");
+					String modelloS=b.nextLine();
+					Scanner c =new Scanner(System.in);
+					System.out.println("scegli cilindrata ");
+					float ciliS=c.nextFloat();
+					Scanner d =new Scanner(System.in);
+					System.out.println("scegli dataImm ");
+					String dataS=d.nextLine();
+					Scanner e =new Scanner(System.in);
+					System.out.println("scegli n Posti ");
+					int postiS=e.nextInt();
+
+					//sql = "INSERT INTO `automobili` (`marca`, `modello`, `cilindrata`,`data_immatricolazione`,`numero_posti`) VALUES (?, ?, ?, ?,?)";
+					sql = "INSERT INTO automobili (marca,modello,cilindrata,data_immatricolazione,numero_posti) VALUES (?, ?, ?, ?,?)";
+					stmt = conn.prepareStatement(sql);
+					//stmt.setInt(1,idS);
+					stmt.setString(1, marcaS);
+					stmt.setString(2, modelloS);
+					stmt.setFloat(3, ciliS);
+					//Date date = (Date) format.parse(dataS);
+					stmt.setString(4, dataS);
+					stmt.setInt(5, postiS);
+					//stmt2.execute();
+					//ResultSet rs = stmt.executeQuery();
+					stmt.execute();
+				}
+				if(scelta==4)
+				{
+					String path="C:\\AndreaBrugali\\esportazione_auto.txt";
+					File file = new File(path);
+					file.createNewFile();
+
+					FileWriter writer = new FileWriter(file);
+					sql = "SELECT marca, modello, numero_posti FROM automobili";
+					stmt = conn.prepareStatement(sql);
+					ResultSet rs = stmt.executeQuery();
+					//STEP 5: Extract data from result set
+					
+					while(rs.next()){
+						//Retrieve by column name
+						String marca = rs.getString("marca");
+						String modello = rs.getString("modello");
+						int nposti = rs.getInt("numero_posti");
+
+						writer.write(marca +"\t|"+marca +"\t|"+nposti+"\n");
+
+					}
+					//STEP 6: Clean-up environment
+					rs.close();
+					
+					writer.flush();
+					writer.close();
+				}
+			}
+			
+			stmt.close();
+			conn.close();
+		}catch(SQLException se){
+			//Handle errors for JDBC
+			se.printStackTrace();
+		}catch(Exception e){
+			//Handle errors for Class.forName
+			e.printStackTrace();
+		}finally{
+			//finally block used to close resources
+			try{
+				if(stmt!=null)	
+					stmt.close();
+			}catch(SQLException se2){
+			}// nothing we can do
+			try{
+				if(conn!=null)
+					conn.close();
+			}catch(SQLException se){
+				se.printStackTrace();
+			}//end finally try
+		}//end try
+		System.out.println("Goodbye!");
+	}//end main
+
+}
