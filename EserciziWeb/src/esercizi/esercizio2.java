@@ -18,12 +18,11 @@ public class esercizio2 extends HttpServlet {
 
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String op1 =request.getParameter("op1");
-		String op2 =request.getParameter("op2");
+		float ope1=Float.parseFloat(request.getParameter("op1"));
+		float ope2=Float.parseFloat(request.getParameter("op2"));
 		String op =request.getParameter("op");
 		
-		float ope1=Float.parseFloat(op1);
-		float ope2=Float.parseFloat(op2);
+		
 		float result=0;
 		
 		if(op.contentEquals("+"))
